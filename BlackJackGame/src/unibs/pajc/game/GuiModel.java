@@ -31,7 +31,6 @@ public class GuiModel {
     private PrintWriter out; 
 	private String message = ""; // message from server
 	private Socket socket; // socket to communicate with server
-	private int cardamt=0;
 
 	// initialize chatServer and set up GUI
     public GuiModel(String host, int serverPort) {
@@ -133,7 +132,7 @@ public class GuiModel {
  	 *  quit the game and closes the socket.
  	 */
 
- 	private void closeConnection() 
+ 	/*private void closeConnection() 
  	{
  		try {
  			socket.close();
@@ -142,7 +141,7 @@ public class GuiModel {
  		}
  		System.exit(0);
  	}	 // end method closeConnection
-
+*/
  	/**
  	* Sends a message to the server.
  	*

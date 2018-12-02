@@ -7,7 +7,7 @@ package unibs.pajc.game;
  * @author Francesco Palberti, Enrico Zaninelli
  */
 
-public class BlackjackClient {                                      
+public class GameClient {                                      
     private static final String DEFAULT_SERVER_ADDRESS = "localhost";   // default server address
     private static final int DEFAULT_SERVER_PORT = 44444;               // default server port
 

@@ -8,7 +8,7 @@ package unibs.pajc.game;
 
 
 public class BlackjackGuiController {
-	private BlackJackGui gui;
+	private BlackjackGui gui;
 	private GuiModel gm;
 
 	/**
@@ -19,7 +19,7 @@ public class BlackjackGuiController {
      */
 	
 	public BlackjackGuiController(GuiModel gm) {
-		this.gui = new BlackJackGui(this);
+		this.gui = new BlackjackGui(this);
 	    this.gm = gm;
 	}
 	

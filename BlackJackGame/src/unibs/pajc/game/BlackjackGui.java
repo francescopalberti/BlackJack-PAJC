@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
  * @author Francesco Palberti, Enrico Zaninelli
  */
 
-public class BlackJackGui extends JFrame {
+public class BlackjackGui extends JFrame {
 	private BlackjackGuiController controller; // client GUI controller
 	private JButton Hit;
 	private JButton Stay;
@@ -31,7 +31,7 @@ public class BlackJackGui extends JFrame {
      * @param aController. Client controller
      */
 	
-    public BlackJackGui(BlackjackGuiController aController) {
+    public BlackjackGui(BlackjackGuiController aController) {
     	super( "Player" );
     	this.controller = aController;
     	buttons = new JPanel();

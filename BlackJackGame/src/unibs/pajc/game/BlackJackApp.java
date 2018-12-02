@@ -25,7 +25,7 @@ import javax.swing.SwingUtilities;
  *
  * @author Francesco Palberti, Enrico Zaninelli
  */
-public class BlackJackGame extends JFrame {
+public class BlackJackApp extends JFrame {
     private JButton Deal;
 	private Deck newdeck;
 	private JTextArea displayArea; // display information to user
@@ -40,7 +40,7 @@ public class BlackJackGame extends JFrame {
 	private boolean roundover = true;
 
 	// set up GUI
-	public BlackJackGame() {
+	public BlackJackApp() {
 
 		super( "Dealer" );
 

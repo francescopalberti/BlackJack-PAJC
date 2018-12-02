@@ -8,7 +8,7 @@ package unibs.pajc.game;
 
 public class BlackJackController {
 	private BlackJackModel model;  
-	private BlackJackGUI view;
+	private BlackJackGui view;
 	private String serverAddress;       // server address
 	private int serverPort;  			//server port
 
@@ -22,7 +22,7 @@ public class BlackJackController {
 		System.out.println("Starting Blackjack client\nServer address: " + serverAddress + "\nServer port: " + serverPort);
         this.serverAddress=serverAddress;
         this.serverPort=serverPort;
-		view = new BlackJackGUI(this);
+		view = new BlackJackGui(this);
     	model = new BlackJackModel(this.serverAddress, this.serverPort);
     	processConnection();
 	}

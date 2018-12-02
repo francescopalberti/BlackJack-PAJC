@@ -1,4 +1,5 @@
 package unibs.pajc.game;
+
 /**
  * BlackjackController class update the view and get notify from the model.
  *
@@ -6,11 +7,9 @@ package unibs.pajc.game;
  */
 
 
-public class BlackJackController {
-	private BlackJackModel model;  
-	private BlackJackGui view;
-	private String serverAddress;       // server address
-	private int serverPort;  			//server port
+public class BlackjackGuiController {
+	private BlackJackGui gui;
+	private GuiModel gm;
 
 	/**
      * Constructor for controller. Create a new view and a new model. process connection with server
@@ -18,15 +17,16 @@ public class BlackJackController {
      * @param serverAddress server address
      * @param serverPort server port
      */
-	public BlackJackController(String serverAddress, int serverPort) {
-		System.out.println("Starting Blackjack client\nServer address: " + serverAddress + "\nServer port: " + serverPort);
-        this.serverAddress=serverAddress;
-        this.serverPort=serverPort;
-		view = new BlackJackGui(this);
-    	model = new BlackJackModel(this.serverAddress, this.serverPort);
-    	processConnection();
+	
+	public BlackjackGuiController(GuiModel gm) {
+		this.gui = new BlackJackGui(this);
+	    this.gm = gm;
 	}
 	
+	public void run()
+    {
+		processConnection();
+    }
 	
 	/**
 	 * Process connection with server
@@ -40,12 +40,12 @@ public class BlackJackController {
 			System.out.println("messaggio"+messageFromServer); //for diagnostic use
 			changeView( "\n" + messageFromServer ); // display graphic message
 			if (messageFromServer.contains("Bust!") || messageFromServer.contains("Please Wait")){
-				view.disableButtons();				
+				gui.disableButtons();				
 			}
 		} while(!messageFromServer.equals( "SERVER>>> TERMINATE" ));
 	} // end method processConnection
 	
-		
+	
 	/**
 	 * Send data msg to server.
 	 *
@@ -53,7 +53,7 @@ public class BlackJackController {
 	 */	
 	public void sendData( String message )
     {
-		model.sendClientMessage(message);
+		gm.sendClientMessage(message);
     }
 	
 	/**
@@ -62,7 +62,7 @@ public class BlackJackController {
 	 */	
 	public String getServerMessage()
     {
-		return model.getServerMessage();
+		return gm.getServerMessage();
     }
 
 	
@@ -72,7 +72,7 @@ public class BlackJackController {
      * @param serverMessage Message received from server
      */
 	public void changeView (String messageToDisplay) {
-		view.displayMessage(messageToDisplay);
+		gui.displayMessage(messageToDisplay);
 	}
 
 	

@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
  */
 
 public class BlackJackGui extends JFrame {
-	private BlackJackController controller; // client GUI controller
+	private BlackjackGuiController controller; // client GUI controller
 	private JButton Hit;
 	private JButton Stay;
 	private JPanel buttons;
@@ -31,7 +31,7 @@ public class BlackJackGui extends JFrame {
      * @param aController. Client controller
      */
 	
-    public BlackJackGui(BlackJackController aController) {
+    public BlackJackGui(BlackjackGuiController aController) {
     	super( "Player" );
     	this.controller = aController;
     	buttons = new JPanel();

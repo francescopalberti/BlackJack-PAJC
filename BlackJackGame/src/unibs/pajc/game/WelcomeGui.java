@@ -20,17 +20,15 @@ public class WelcomeGui {
     JLabel welcomeLabel;
 
     public JButton onePlayerButton;
-    public JButton twoPlayersButton;
-    public JButton threePlayersButton;
+    public JButton multiPlayerButton;
 
     public void display(){
         welcomeFrame = new JFrame();
         welcomePanel = new JPanel(new GridLayout(4, 0, 5, 0));
         welcomeLabel = new JLabel();
 
-        onePlayerButton = new JButton("1 player");
-        twoPlayersButton = new JButton("2 players");
-        threePlayersButton = new JButton("3 players");
+        onePlayerButton = new JButton("Solo Game");
+        multiPlayerButton = new JButton("MultiPlayer");
 
 
         welcomeLabel.setText("Welcome to Blackjack");
@@ -39,8 +37,7 @@ public class WelcomeGui {
         welcomePanel.add(welcomeLabel);
 
         welcomePanel.add(onePlayerButton);
-        welcomePanel.add(twoPlayersButton);
-        welcomePanel.add(threePlayersButton);
+        welcomePanel.add(multiPlayerButton);
         welcomePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         // create the outer panel to center the widgets

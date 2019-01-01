@@ -132,7 +132,7 @@ public class GuiModel {
  	 *  quit the game and closes the socket.
  	 */
 
- 	/*private void closeConnection() 
+ 	private void closeConnection() 
  	{
  		try {
  			socket.close();
@@ -141,7 +141,7 @@ public class GuiModel {
  		}
  		System.exit(0);
  	}	 // end method closeConnection
-*/
+ 	
  	/**
  	* Sends a message to the server.
  	*

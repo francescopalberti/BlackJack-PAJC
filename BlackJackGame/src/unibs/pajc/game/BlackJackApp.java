@@ -144,12 +144,24 @@ public class BlackJackApp extends JFrame {
 				players.add(p);
 				sockServer[i].sendData("You were Dealt:\n" + c1 + " " + c2);
 				sockServer[i].sendData("Your Total: " +  p.GetCardTotal());
-
+				for (int j = 1; j < counter; j++) {
+					if(j!=i) {
+						sockServer[j].sendData("P"+i + " " + c1 + " " + c2);
+						sockServer[j].sendData("P"+i + " Card Total " +  p.GetCardTotal());
+					}
+				}
+				
 			}
 		}
 		catch(NullPointerException n){}
 	}
-
+	private void refreshOtherPlayersCards(int i, Card aCard) {
+		for (int j = 1; j < counter; j++) {
+			if(j!=i) {
+				sockServer[j].sendData("P"+i + " " + aCard);
+			}
+		}
+	}
 	private void Results() {
 
 		try{
@@ -276,6 +288,7 @@ public class BlackJackApp extends JFrame {
 		} // end method processConnection
 
 
+
 		private void DealerGo() {		
 			dplayer = new Player(dcard1,dcard2);
 			try {
@@ -306,6 +319,7 @@ public class BlackJackApp extends JFrame {
 			sendData(nextc.toString());
 			players.get(this.myConID -1).CardHit(nextc);
 			sendData("Your Total: " +  players.get(this.myConID -1).GetCardTotal());
+			refreshOtherPlayersCards(myConID,nextc);
 			if(players.get(this.myConID -1).CheckBust()) {			//if player busted
 				sendData("Bust!\n");		
 				playersleft--;

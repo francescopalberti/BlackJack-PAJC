@@ -150,7 +150,7 @@ public class BlackJackApp extends JFrame {
 						sockServer[j].sendData("P"+i + " Card Total " +  p.GetCardTotal());
 					}
 				}
-				
+				//fdf
 			}
 		}
 		catch(NullPointerException n){}

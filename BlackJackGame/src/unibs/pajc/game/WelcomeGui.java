@@ -38,7 +38,6 @@ public class WelcomeGui {
 
         welcomePanel.add(onePlayerButton);
         welcomePanel.add(multiPlayerButton);
-        welcomePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         // create the outer panel to center the widgets
         outerPanel = new JPanel();
@@ -49,7 +48,7 @@ public class WelcomeGui {
         outerPanel.add(Box.createHorizontalGlue());
 
         welcomeFrame.add(welcomePanel);
-        welcomeFrame.setSize(200,175);
+        welcomeFrame.setSize(600,600);
         welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         welcomeFrame.setVisible(true);
         welcomeFrame.pack();

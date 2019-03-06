@@ -7,11 +7,11 @@ import javax.swing.JFrame;
  *
  * @param args String array of arguments passed to the server
  */
-public class GameServer {
+public class MainServer {
 	public static void main( String[] args )
 	   {
-	      BlackJackApp application = new BlackJackApp(); // create a blackjack hand
+	      ServerBJApp application = new ServerBJApp(); 
 	      application.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-	      application.runDeal(); // run server application
+	      application.startGameConnection(); // run server application
 	   } // end main
 }

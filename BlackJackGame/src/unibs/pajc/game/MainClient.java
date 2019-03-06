@@ -1,5 +1,7 @@
 package unibs.pajc.game;
 
+import java.io.IOException;
+
 /**
  * The Client class for the Blackjack Game.
  * Contains main
@@ -7,7 +9,7 @@ package unibs.pajc.game;
  * @author Francesco Palberti, Enrico Zaninelli
  */
 
-public class GameClient {                                      
+public class MainClient {                                      
     private static final String DEFAULT_SERVER_ADDRESS = "localhost";   // default server address
     private static final int DEFAULT_SERVER_PORT = 44444;               // default server port
 
@@ -24,7 +26,11 @@ public class GameClient {
         	appController = new GuiController(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT); // connect to localhost
         else
         	appController = new GuiController( args[ 0 ], DEFAULT_SERVER_PORT ); // use args to connect
-        appController.run();	   
+        	try {
+				appController.runClient();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	   } // end main
 	
 }

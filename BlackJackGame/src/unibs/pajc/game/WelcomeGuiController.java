@@ -21,7 +21,7 @@ public class WelcomeGuiController {
 	  public void attachActionListeners(){
 	      welcomeGui.onePlayerButton.addActionListener(e -> gm.setNumPlayers(1));
 	      welcomeGui.onePlayerButton.addActionListener(new closeAndIncrementStage());
-	      welcomeGui.multiPlayerButton.addActionListener(e -> gm.setNumPlayers(2));
+	      welcomeGui.multiPlayerButton.addActionListener(e -> gm.setMultiplayer()); 
 	      welcomeGui.multiPlayerButton.addActionListener(new closeAndIncrementStage());
 	  }
 

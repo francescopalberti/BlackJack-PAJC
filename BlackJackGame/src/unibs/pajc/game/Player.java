@@ -1,7 +1,5 @@
 package unibs.pajc.game;
 
-import java.util.ArrayList;
-
 /**
  * Player objects represent a standard player
  *
@@ -12,7 +10,7 @@ import java.util.ArrayList;
 public class Player {
 	private boolean bust=false;
 	private int blackJackValue=0;
-	private ArrayList<Card> handCards;
+	private CardGroup handCards;
 	
 	/**
      * Constructor for Player object.
@@ -22,7 +20,7 @@ public class Player {
      */
 
 	public Player(Card card1, Card card2) {
-		handCards = new ArrayList<Card>();
+		handCards = new CardGroup();
 		handCards.add(card1);
 		handCards.add(card2);
 		blackJackValue();
@@ -48,11 +46,7 @@ public class Player {
 	 */
 
 	public int handValue() {
-		int value = 0;  // value of the hand in Blackjack
-		for (Card card : handCards) {
-			value += card.getValue();
-		}
-    return value;
+		return handCards.getTotalValue();
 	}
 	
 	/**
@@ -62,12 +56,8 @@ public class Player {
 	 */
 
 	private boolean hasAce() {
-		for (Card card : handCards) {
-			if (card.getValue() == 1) {
-				return true;
-			}
-		}
-    return false;
+		
+    return handCards.hasAce();
 	}
 	
 	/**

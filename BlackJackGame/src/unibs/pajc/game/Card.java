@@ -1,4 +1,5 @@
 package unibs.pajc.game;
+
 /**
  * Card objects represent a standard playing card with a rank and a suit.
  *
@@ -20,6 +21,7 @@ public class Card {
         RANK = rank;
         SUIT = suit;
     }
+    
 
     /**
      * Ranks that cards can have.
@@ -99,6 +101,12 @@ public class Card {
 
     @Override
     public String toString() {
-        return RANK + "_of_" + SUIT;
+        return RANK + "--" + SUIT;
     }
+    
+    public String getFileName() { // Get the file name of the image of this card
+		return String.format("C:\\Users\\franc\\git\\BlackJack-PAJC\\cardImages\\%s\\%s.png", this.SUIT, this.RANK); // Return file name
+    }
+    
+    
 }

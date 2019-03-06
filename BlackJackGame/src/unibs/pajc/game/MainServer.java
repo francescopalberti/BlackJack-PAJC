@@ -11,7 +11,6 @@ public class MainServer {
 	public static void main( String[] args )
 	   {
 	      ServerBJApp application = new ServerBJApp(); 
-	      application.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 	      application.startGameConnection(); // run server application
 	   } // end main
 }

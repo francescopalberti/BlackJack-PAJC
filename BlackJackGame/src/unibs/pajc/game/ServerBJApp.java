@@ -25,12 +25,10 @@ import javax.swing.SwingUtilities;
  *
  * @author Francesco Palberti, Enrico Zaninelli
  */
-public class ServerBJApp extends JFrame {
+public class ServerBJApp{
 	private static final int numberOfPlayers = 2;
 	private CountDownLatch placedBetsLatch;                                 // latch to wait for all players to place their bets
-	private CountDownLatch playerTurnLatch;                                 // latch to wait for all players to place their bets
 	private Deck gameDeck;
-	private JTextArea displayArea; // display information to user
 	private ExecutorService executor; // will run players
 	private ServerSocket server; // server socket
 	private SockServer[] sockServer; // Array of objects to be threaded
@@ -38,26 +36,15 @@ public class ServerBJApp extends JFrame {
 	private Card dcard1,dcard2;
 	private ArrayList<Player> players;
 	private Player dplayer;
-	private int playersleft;
-	private boolean roundover = true;
 	private Player dealer;
 
 	// set up GUI
 	public ServerBJApp() {
 		
-		super( "DIAGNOSTIC SERVER" );
 		players = new ArrayList<Player>();
 		sockServer = new SockServer[ 100 ]; // allocate array for up to 10 server threads
 		executor = Executors.newFixedThreadPool(100); // create thread pool
-
-		displayArea = new JTextArea(); // create displayArea
-		displayArea.setEditable(false);
-		add( new JScrollPane( displayArea ), BorderLayout.CENTER );
-		
 		gameDeck = new Deck();
-
-		setSize( 300, 300 ); // set size of window
-		setVisible( true ); // show window
 		
 		
 	} // end Server constructor
@@ -73,23 +60,24 @@ public class ServerBJApp extends JFrame {
 					// make that new object wait for a connection on that new server object
 					sockServer[counter].waitForConnection();
 					// launch that server object into its own new thread
-					executor.execute(sockServer[ counter ]);
+					executor.execute(sockServer[counter]);
 					// then, continue to create another object and wait (loop)
 
 				} catch (EOFException e) {
-					displayMessage( "\nServer terminated connection" ); //diagnostic use
+					System.out.println( "Server terminated connection" ); //diagnostic use
 				} finally {
 					++counter;
-				} // end finally
-			} // end while
+				}
+			} 
 		} catch (IOException e) {
 			e.printStackTrace();
-		} // end catch
+		} 
 		
 		placedBetsLatch = new CountDownLatch(numberOfPlayers); //serve per aspettare che tutti scommettano
+		
 		for (int i = 1; i <= numberOfPlayers; i++) {
 			sockServer[i].sendDataToClient("GETBET--");
-			displayMessage("\nSERVER-> Bet P" +i+" Sent"); //diagnostic use
+			System.out.println("SERVER-> Bet P" +i+" Sent"); //diagnostic use
 		}
 		
 		try {
@@ -99,13 +87,16 @@ public class ServerBJApp extends JFrame {
         }
 		
 		allBetPlaced();
+		
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
         dealCards();
+        
 		menageTurn();
 	} 
 
@@ -114,7 +105,7 @@ public class ServerBJApp extends JFrame {
 		try{
 			for (int i=1;i<= numberOfPlayers;i++) {
 				sockServer[i].sendDataToClient("ALLBETPLACED--");
-				displayMessage("\nSERVER-> ALLBETPLACED P" +i+" Sent"); //diagnostic use
+				System.out.println("SERVER-> ALLBETPLACED P" +i+" Sent"); //diagnostic use
 			}
 		}
 		catch(NullPointerException n){}
@@ -154,7 +145,7 @@ public class ServerBJApp extends JFrame {
 	private void menageTurn() {
 		for (int i = 1; i <= numberOfPlayers; i++)  {
 				sockServer[i].sendDataToClient("TURN--");
-				displayMessage("\nSERVER P"+i+" TURN");
+				System.out.println("SERVER P"+i+" TURN");
 				
 				
 		}
@@ -213,20 +204,6 @@ public class ServerBJApp extends JFrame {
 		catch(NullPointerException n){}
 	}
 	
-	// manipulates displayArea for diagnostic usage
-		private void displayMessage( final String messageToDisplay )
-		{
-			SwingUtilities.invokeLater(
-					new Runnable() 
-					{
-						public void run() // updates displayArea
-						{
-							displayArea.append( messageToDisplay ); // append message
-						} // end method run
-					} // end anonymous inner class
-					); // end call to SwingUtilities.invokeLater
-		} // end method displayMessage
-
 	/* This new Inner Class implements Runnable and objects instantiated from this
 	 * class will become server threads each serving a different client
 	 */
@@ -236,15 +213,15 @@ public class ServerBJApp extends JFrame {
 		private BufferedReader input; // input stream from client
 		private Socket connection; // connection to client
 		private int myConID;
-		public SockServer(int counterIn) {
+		public SockServer(int counterIn) throws IOException {
 			myConID = counterIn;
 		}
 
 		// wait for connection to arrive, then display connection info
 		private void waitForConnection() throws IOException {
-			displayMessage( "SERVER -> Waiting for connection" + myConID + "\n" );
+			System.out.println( "SERVER -> Waiting for connection" + myConID);
 			connection = server.accept(); // allow server to accept connection            
-			displayMessage( "SERVER -> Connection " + myConID + " received from: " +
+			System.out.println( "SERVER -> Connection " + myConID + " received from: " +
 			connection.getInetAddress().getHostName() ); //DIAGNOSTICA
 		} // end method waitForConnection
 				
@@ -258,6 +235,7 @@ public class ServerBJApp extends JFrame {
 					}// end catch
 				} catch (IOException e) {
 					e.printStackTrace();
+					closeConnection(); //  close connection
 				}
 		} // end method	
 
@@ -271,18 +249,18 @@ public class ServerBJApp extends JFrame {
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
-			displayMessage( "\nSERVER -> STREAM OK" );
+			System.out.println( "SERVER -> STREAM OK" );
 		} // end method getStreams
 
 		// process connection with client
 		private void processConnection() throws IOException
 		{
 			String client_msg = "";
-			sendDataToClient("CONNECT-OK--" + myConID + " successful"); // send connection successful message
+			sendDataToClient("CONNECTOK--" + myConID); // send connection successful message
 			do // process messages sent from client
 			{ 
 				client_msg=input.readLine(); // read new message
-				displayMessage( "\nCLIENT -> "+ client_msg);
+				System.out.println( "CLIENT -> "+ client_msg);
 				if(client_msg.contains("BET")){				
 					placeBet();
 				}
@@ -313,14 +291,14 @@ public class ServerBJApp extends JFrame {
 				while(dealer.GetCardTotal() < 16){
 					Card card1 = gameDeck.dealCard();
 					dealer.CardHit(card1);
-					displayMessage("Dealer hits..." + card1 +  "\n" + "Total:" + dealer.GetCardTotal() + "\n");				
+					System.out.println("Dealer hits..." + card1 +  "\n" + "Total:" + dealer.GetCardTotal() + "\n");				
 				}
 			}
 			if(dealer.CheckBust()){
-				displayMessage("Dealer Busts!");
+				System.out.println("Dealer Busts!");
 			}
 			else{
-				displayMessage("Dealer has" + " " + dealer.GetCardTotal());
+				System.out.println("Dealer has" + " " + dealer.GetCardTotal());
 			}
 
 			getResults();
@@ -345,7 +323,7 @@ public class ServerBJApp extends JFrame {
 
 		// close streams and socket
 		private void closeConnection() {
-			displayMessage( "\nSERVER -> TERMINATING SOCKET " + myConID + "\n" );
+			System.out.println( "SERVER -> TERMINATING SOCKET " + myConID + "\n" );
 			try {
 				output.close(); // close output stream
 				input.close(); // close input stream

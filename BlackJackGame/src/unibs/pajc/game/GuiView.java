@@ -87,6 +87,7 @@ public class GuiView extends JFrame {
 		lblInfo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblInfo.setBounds(290, 482, 320, 28);
 		frame.getContentPane().add(lblInfo);
+		frame.repaint();
  	}
  	
  	public void showBetGui() { // This runs when a new game is started. It initializes and displays the current balance label, deal amount and deal button

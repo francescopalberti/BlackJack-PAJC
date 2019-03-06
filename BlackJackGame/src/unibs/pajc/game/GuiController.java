@@ -30,6 +30,7 @@ public class GuiController {
         this.serverAddress=serverAddress;
         this.serverPort=serverPort;
         gm = new GuiModel();
+        gui = new GuiView(this);
     }
     
     // connect to server and process messages from server
@@ -66,7 +67,7 @@ public class GuiController {
   			InputStreamReader isr = new InputStreamReader(socket.getInputStream());    // input stream reader from socket
   			in = new BufferedReader(isr);
   			out = new PrintWriter(socket.getOutputStream(), true);
-  			System.out.println("\nGot I/O streams\n");
+  			System.out.println("Got I/O streams\n");
   		} catch (IOException e) {
   			e.printStackTrace();
       }
@@ -74,13 +75,26 @@ public class GuiController {
       
   	} // end method getStreams
 
-  	
+  	/**
+	 * Process connection with server
+	 *
+	 */	
+	private void processConnection() {
+		String messageFromServer="";
+		do // process messages sent from server
+			{  
+			messageFromServer=getServerMessage();
+			System.out.println("SERVER -> " + messageFromServer); //for diagnostic use
+			changeView(messageFromServer); // display graphic message
+		} while(!messageFromServer.equals( "SERVER>>>TERMINATE" ));
+	} // end method processConnection
+	
 
   	/**
   	 *  quit the game and closes the socket.
   	 */
 
-  	private void closeConnection () throws IOException 
+  	private void closeConnection() throws IOException 
   	{
   		System.out.println("CLIENT -> CHIUSURA CONNESSIONE SOCKET");
 		if(out != null && in != null && socket != null) {
@@ -100,25 +114,6 @@ public class GuiController {
   	public void sendClientMessageToServer(String clientMessage) {
   		out.println(clientMessage);
   	} // end method sendData
-
-  	/**
-	 * Process connection with server
-	 *
-	 */	
-	private void processConnection() {
-		this.gui = new GuiView(this);
-		String messageFromServer;
-		do // process messages sent from server
-			{  
-			messageFromServer=getServerMessage();
-			System.out.print(messageFromServer); //for diagnostic use
-			changeView(messageFromServer); // display graphic message
-			if (messageFromServer.contains("Bust!") || messageFromServer.contains("Please Wait")){
-				gui.disableButtons();				
-			}
-		} while(!messageFromServer.equals( "SERVER>>>TERMINATE" ));
-	} // end method processConnection
-	
 	
 	/**
      * Gets a message sent by the server.
@@ -127,7 +122,7 @@ public class GuiController {
      */
 
     public String getServerMessage() {
-        String serverMessage = null;
+        String serverMessage = "";
         while (true) {
             try {
                 serverMessage = in.readLine();
@@ -146,7 +141,7 @@ public class GuiController {
 	public void changeView (String messageToDisplay) {
 		String[] serverMessageComponents = messageToDisplay.split("--");   // array containing the components of the server message
         switch (serverMessageComponents[0]) {
-            case "CONNECT-OK":
+            case "CONNECTOK":
                 gui.showWelcomeGui();
                 break;
             case "GETBET":

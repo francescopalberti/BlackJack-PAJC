@@ -167,6 +167,22 @@ public class GuiController {
             case "STAND":
             	gui.playerStand();                
                 break;
+            case "ENDTURN":
+            	gui.playerEndTur();                
+                break;
+            case "RESULT":
+            	switch (serverMessageComponents[1]) {
+                case "TIE":
+                	gui.playerTie();
+                    break;
+                case "WIN":
+                	gui.playerWin();
+                    break;
+                case "LOSE":
+                	gui.playerLose();
+                    break;
+            	}
+            break;
 	}
   
 }

@@ -35,7 +35,6 @@ public class ServerBJApp{
 	private int counter = 1; // counter of number of connections
 	private Card dcard1,dcard2;
 	private ArrayList<Player> players;
-	private Player dplayer;
 	private Player dealer;
 
 	// set up GUI
@@ -96,8 +95,8 @@ public class ServerBJApp{
 		}
 		
         dealCards();
-        
-		menageTurn();
+        menageTurn();
+		getResults();
 	} 
 
 	
@@ -127,10 +126,7 @@ public class ServerBJApp{
 				sockServer[i].sendDataToClient("NEWDEALERCARD--" + dcard2);
 				sockServer[i].sendDataToClient("NEWPLAYERCARD--" + c1);
 				sockServer[i].sendDataToClient("NEWPLAYERCARD--" + c2);
-				/*displayMessage("\nNEWDEALERCARD--" + dcard1);	 //DIAGNOSTIC
-				displayMessage("\nNEWDEALERCARD--" + dcard2);   //DIAGNOSTIC
-				displayMessage("\nNEWPLAYERCARD--" + c1);	//DIAGNOSTIC
-				displayMessage("\nNEWPLAYERCARD--" + c2);    //DIAGNOSTIC
+				/* metodo futuro per visualizzare le carte dell' avversario
 				for (int j = 1; j < counter; j++) {
 					if(j!=i) {
 						sockServer[j].sendData("P"+i + " " + c1 + " " + c2);
@@ -146,63 +142,68 @@ public class ServerBJApp{
 		for (int i = 1; i <= numberOfPlayers; i++)  {
 				sockServer[i].sendDataToClient("TURN--");
 				System.out.println("SERVER P"+i+" TURN");
-				
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (!sockServer[i].getEndTurn()) {
+					sockServer[i].sendDataToClient("ENDTURN--");
+					System.out.println("SERVER P"+i+"ENDTURN");
+				}
 				
 		}
 	}
 	
-
-	 /*
-	private void refreshOtherPlayersCards(int i, Card aCard) {
-		for (int j = 1; j <= numberOfPlayers; j++) {
-			if(j!=i) {
-				sockServer[j].sendData("P"+i + " " + aCard);
-			}
-		}
-	}
-	 */
 	private void getResults() {
-
 		try{
 			for (int i=1;i<= counter;i++) {
-				sockServer[i].sendDataToClient("Dealer has " + dplayer.GetCardTotal());
+				if( (dealer.GetCardTotal() <= 21) && (players.get(i-1).GetCardTotal() <= 21 ) ){
 
-				if( (dplayer.GetCardTotal() <= 21) && (players.get(i-1).GetCardTotal() <= 21 ) ){
-
-					if (dplayer.GetCardTotal() > players.get(i-1).GetCardTotal()) {
-						sockServer[i].sendDataToClient("\n You Lose!");
+					if (dealer.GetCardTotal() > players.get(i-1).GetCardTotal()) {
+						sockServer[i].sendDataToClient("RESULT--LOSE");
 					}
 
-					if (dplayer.GetCardTotal() < players.get(i-1).GetCardTotal()) {
-						sockServer[i].sendDataToClient("\n You Win!");
+					if (dealer.GetCardTotal() < players.get(i-1).GetCardTotal()) {
+						sockServer[i].sendDataToClient("RESULT--WIN");
 					}
 
-					if (dplayer.GetCardTotal() == players.get(i-1).GetCardTotal()) {
-						sockServer[i].sendDataToClient("\n Tie!");
+					if (dealer.GetCardTotal() == players.get(i-1).GetCardTotal()) {
+						sockServer[i].sendDataToClient("RESULT--TIE");
 					}				
 
 				}//end if statement when dealer and player are under 21
 
-				if(dplayer.CheckBust()){
+				if(dealer.CheckBust()){
 					
 					if(players.get(i-1).CheckBust()){
-						sockServer[i].sendDataToClient("\n Tie!");
+						sockServer[i].sendDataToClient("RESULT--TIE");
 					}
 					if(players.get(i-1).GetCardTotal() <= 21){
-						sockServer[i].sendDataToClient("\n You Won!");
+						sockServer[i].sendDataToClient("RESULT--WIN");
 					}
-				}
+				}//end if statement when dealer busted
 
-				if(players.get(i-1).CheckBust() && dplayer.GetCardTotal() <= 21){
-					sockServer[i].sendDataToClient("\n You Lose!");
-				}
-			}//end for loop
-			
-
-
-		}//end try block
-		catch(NullPointerException n){}
+				if(players.get(i-1).CheckBust() && dealer.GetCardTotal() <= 21){
+					sockServer[i].sendDataToClient("RESULT--LOSE");
+				}//end if statement when player busted
+			}
+		}
+		catch(NullPointerException e){
+			e.printStackTrace();
+		}
 	}
+	
+	 /*
+		private void refreshOtherPlayersCards(int i, Card aCard) {
+			for (int j = 1; j <= numberOfPlayers; j++) {
+				if(j!=i) {
+					sockServer[j].sendData("P"+i + " " + aCard);
+				}
+			}
+		}
+		 */
 	
 	/* This new Inner Class implements Runnable and objects instantiated from this
 	 * class will become server threads each serving a different client
@@ -213,6 +214,7 @@ public class ServerBJApp{
 		private BufferedReader input; // input stream from client
 		private Socket connection; // connection to client
 		private int myConID;
+		private Boolean endTurn=false;
 		public SockServer(int counterIn) throws IOException {
 			myConID = counterIn;
 		}
@@ -312,14 +314,22 @@ public class ServerBJApp{
 			
 			if(players.get(this.myConID -1).CheckBust()) {			//if player busted
 				sendDataToClient("BUST--");
-
+				endTurn=true;
 			}
 		}
 		
 		private void playerStay() {
 			sendDataToClient("STAND--");
+			endTurn=true;
 		}
 
+		
+		/**
+		 * @return the endTurn
+		 */
+		public Boolean getEndTurn() {
+			return endTurn;
+		}
 
 		// close streams and socket
 		private void closeConnection() {

@@ -274,6 +274,32 @@ public class GuiView extends JFrame {
 		frame.repaint();
 	}
  	
+ 	public void playerEndTur() {
+ 		btnHit.setEnabled(false);
+ 		btnStand.setEnabled(false);
+ 		lblInfo.setBackground(Color.CYAN);
+ 		lblInfo.setText("Your time is finished! Please Wait other players..."); 
+		frame.repaint();
+	}
+
+ 	public void playerTie() {
+ 		lblInfo.setText("You Tie!"); 
+		outcomeHappened();
+ 		frame.repaint();
+	}
+
+	public void playerWin() {
+		lblInfo.setText("You Won!"); 
+		outcomeHappened();
+		frame.repaint();
+	}
+
+	public void playerLose() {
+		lblInfo.setText("You Lose!"); 
+		outcomeHappened();
+		frame.repaint();
+	}	
+ 	
 	public  void outcomeHappened() { //If something's happened, this round is over. Show the results of round and Continue button
 
 		btnHit.setEnabled(false);

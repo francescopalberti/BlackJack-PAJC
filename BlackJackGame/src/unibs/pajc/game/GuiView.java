@@ -44,7 +44,7 @@ public class GuiView extends JFrame {
 	// Creating the GUI elements in the window builder
 	private JTextField tfBalance;
 	private JLabel lblInitialBalance;
-	private JButton btnNewGame;
+
 	private JButton btnEndGame;
 	private JTextField tfBetAmount;
 	private JLabel lblEnterBet;
@@ -70,15 +70,57 @@ public class GuiView extends JFrame {
     public GuiView(GuiController guiController) {
     	frame.setVisible(true);
     	this.controller = guiController;
-    	
+    	initGuiObjects();
     }	 // end Client constructor
     
     // This function runs when the program starts or when the game ends. It displays the initial GUI objects to enter an initial balance and start/stop a game
  	public void initGuiObjects() {
+ 		tfBalance = new JTextField(); // Text field to store initial balance
+ 		lblInitialBalance = new JLabel("Initial Balance:"); // Initial balance label
+ 		lblCurrentBalance = new JLabel("Current Balance:"); // Current balance label
+ 		lblBalanceAmount = new JLabel(); // Balance label, shows current balance
+ 		tfBetAmount = new JTextField(); // Bet amount text field
+ 		lblEnterBet = new JLabel("Enter Bet:"); // Bet amount info label
+ 		btnBet = new JButton("Bet"); // Deal button
+ 		btnBet.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getBet();
+			}
+		});
+ 		lblDealer = new JLabel("Dealer"); // Dealer label
+ 		lblPlayer = new JLabel("Player"); // Player label
+ 		btnHit = new JButton("Hit"); // Hit button
+ 		btnHit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.sendClientMessageToServer( "HIT" ); // When pressed, hit
+			}
+		});
+ 		btnStand = new JButton("Stand"); // Stand button
+ 		btnStand.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.sendClientMessageToServer( "STAY" ); // When pressed, stand
+			}
+		});
+ 		btnContinue = new JButton("Continue"); // When the final outcome is reached, press this to accept and continue the game
+ 		btnContinue.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				acceptOutcome();
+			}
+		});	
  		
- 	}
- 
- 	public void showWelcomeGui() {
+ 		btnEndGame = new JButton("End Game"); // End game button, this removes all GUI objects and starts from scratch
+ 		btnEndGame.setEnabled(false);
+ 		btnEndGame.setVisible(false);
+ 		btnEndGame.setBounds(121, 610, 99, 50);
+ 		btnEndGame.addActionListener(new ActionListener() {
+ 			public void actionPerformed(ActionEvent e) {
+ 				frame.getContentPane().removeAll(); // Remove all objects from screen
+ 				frame.repaint(); // Repaint to show update
+ 				controller.sendClientMessageToServer( "END" ); 
+ 			}
+ 		});
+ 		frame.getContentPane().add(btnEndGame);
+ 		
  		lblInfo = new JLabel("Waiting other players"); // Deal info label
 		lblInfo.setBackground(Color.ORANGE);
 		lblInfo.setOpaque(false);
@@ -87,42 +129,46 @@ public class GuiView extends JFrame {
 		lblInfo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblInfo.setBounds(290, 482, 320, 28);
 		frame.getContentPane().add(lblInfo);
-		frame.repaint();
  	}
  	
- 	public void showBetGui() { // This runs when a new game is started. It initializes and displays the current balance label, deal amount and deal button
- 		btnEndGame = new JButton("End Game"); // End game button, this removes all GUI objects and starts from scratch
- 		btnEndGame.setEnabled(false);
- 		btnEndGame.setBounds(121, 610, 99, 50);
- 		btnEndGame.addActionListener(new ActionListener() {
- 			public void actionPerformed(ActionEvent e) {
- 				frame.getContentPane().removeAll(); // Remove all objects from screen
- 				frame.repaint(); // Repaint to show update
- 				initGuiObjects(); // Restart the game logic and display the New Game menu
- 			}
- 		});
- 		frame.getContentPane().add(btnEndGame);
-
- 		tfBalance = new JTextField(); // Text field to store initial balance
+ 	/**
+     * Show the initial game view
+     *
+     */
+ 
+ 	public void showWelcomeGui() {
+ 		lblInfo.setText("Connnect OK! Waiting other players");
+ 		frame.repaint();
+ 	}
+ 	
+ 	/**
+     * Show the the bet gui view after the getBet message
+     *
+     */
+ 	
+ 	public void showBetGui() { 
+ 		btnEndGame.setEnabled(true);
+ 		btnEndGame.setVisible(true);
+ 		
  		tfBalance.setText("100");
  		tfBalance.setBounds(131, 580, 89, 28);
- 		frame.getContentPane().add(tfBalance);
  		tfBalance.setColumns(10);
- 		lblInitialBalance = new JLabel("Initial Balance:"); // Initial balance label
+ 		frame.getContentPane().add(tfBalance);
+ 		
+ 		
  		lblInitialBalance.setFont(new Font("Arial", Font.BOLD, 13));
  		lblInitialBalance.setForeground(Color.WHITE);
  		lblInitialBalance.setBounds(30, 586, 100, 16);
  		tfBalance.setEnabled(false);
  		frame.getContentPane().add(lblInitialBalance);
  		
-		lblCurrentBalance = new JLabel("Current Balance:"); // Current balance label
+		
 		lblCurrentBalance.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCurrentBalance.setFont(new Font("Arial", Font.BOLD, 16));
 		lblCurrentBalance.setForeground(Color.WHITE);
 		lblCurrentBalance.setBounds(315, 578, 272, 22);
 		frame.getContentPane().add(lblCurrentBalance);
 
-		lblBalanceAmount = new JLabel(); // Balance label, shows current balance
 		lblBalanceAmount.setText(String.format("$%.2f", balance));
 		lblBalanceAmount.setForeground(Color.ORANGE);
 		lblBalanceAmount.setFont(new Font("Arial", Font.BOLD, 40));
@@ -130,36 +176,36 @@ public class GuiView extends JFrame {
 		lblBalanceAmount.setBounds(315, 600, 272, 50);
 		frame.getContentPane().add(lblBalanceAmount);
 
-		
 		lblInfo.setText("Please enter a bet and click Deal");
+		frame.getContentPane().add(lblInfo);
 
-		tfBetAmount = new JTextField(); // Bet amount text field
+		
 		tfBetAmount.setText("10");
 		tfBetAmount.setBounds(790, 580, 89, 28);
 		frame.getContentPane().add(tfBetAmount);
 
-		lblEnterBet = new JLabel("Enter Bet:"); // Bet amount info label
+		
 		lblEnterBet.setFont(new Font("Arial", Font.BOLD, 14));
 		lblEnterBet.setForeground(Color.WHITE);
 		lblEnterBet.setBounds(689, 586, 100, 16);
 		frame.getContentPane().add(lblEnterBet);
 
-		btnBet = new JButton("Bet"); // Deal button
+		
 		btnBet.setBounds(679, 610, 200, 50);
 		btnBet.setEnabled(true);
- 		btnBet.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				getBet();
-			}
-		});
+ 		
 		frame.getContentPane().add(btnBet);
+		
 		frame.repaint();
  	}
  	
- 	
+ 	/**
+     * Gets the bet from the player
+     *
+     */
  	
  	public void getBet() {
- 		if (isValidAmount(tfBetAmount.getText()) == true) { // Parse bet amount given
+ 		if (isValidAmount(tfBetAmount.getText()) == true) { 
 			betAmount = Integer.parseInt(tfBetAmount.getText());
 		} else {
 			lblInfo.setText("Error: Bet must be a natural number!"); // Give an error
@@ -172,69 +218,62 @@ public class GuiView extends JFrame {
 			tfBetAmount.requestFocus();
 			return;
 		}
-		controller.sendClientMessageToServer( "BET" ); // When pressed, hit
+		
+		controller.sendClientMessageToServer( "BET" ); 
 		
 		balance -= betAmount; // Subtract bet from balance
-		
 		lblBalanceAmount.setText(String.format("$%.2f", balance));
 		
 		tfBetAmount.setEnabled(false);
 		btnBet.setEnabled(false);
 
-		lblInfo.setText("Waiting others player bet"); // Next instruction
-		frame.repaint(); // Redraw frame to show changes
+		lblInfo.setText("Waiting others player bet"); 
+		frame.repaint(); 
 
 	}
  	
+ 	/**
+     * After all the bet have been placed show the players cards
+     *
+     */
+ 	
  	public void allBetPlaced() {
- 		lblDealer = new JLabel("Dealer"); // Dealer label
+ 		
 		lblDealer.setForeground(Color.WHITE);
 		lblDealer.setFont(new Font("Arial Black", Font.BOLD, 20));
 		lblDealer.setBounds(415, 158, 82, 28);
 		frame.getContentPane().add(lblDealer);
 
-		lblPlayer = new JLabel("Player"); // Player label
+		
 		lblPlayer.setForeground(Color.WHITE);
 		lblPlayer.setFont(new Font("Arial Black", Font.BOLD, 20));
 		lblPlayer.setBounds(415, 266, 82, 28);
 		frame.getContentPane().add(lblPlayer);
 
-		btnHit = new JButton("Hit"); // Hit button
+		
 		btnHit.setBounds(290, 515, 140, 35);
-		btnHit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				controller.sendClientMessageToServer( "HIT" ); // When pressed, hit
-			}
-		});
+		
 		btnHit.setEnabled(false);
 		frame.getContentPane().add(btnHit);
-		btnStand = new JButton("Stand"); // Stand button
+		
+		
 		btnStand.setBounds(470, 515, 140, 35);
-		btnStand.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				controller.sendClientMessageToServer( "STAY" ); // When pressed, stand
-			}
-		});
+		
 		btnStand.setEnabled(false);
 		frame.getContentPane().add(btnStand);
-
-		btnContinue = new JButton("Continue"); // When the final outcome is reached, press this to accept and continue the game
-		btnContinue.setEnabled(false);
-		btnContinue.setVisible(false);
-		btnContinue.setBounds(290, 444, 320, 35);
-		btnContinue.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				acceptOutcome(); // Accept outcome
-			}
-		});
 		
-		frame.getContentPane().add(btnContinue);
-		lblInfo.setText("Cards dealt"); // Next instruction
-		frame.repaint(); // Redraw frame to show changes
+		lblInfo.setText("Cards dealt"); 
+		frame.repaint(); 
 		
 	}
+ 	
+ 	/**
+     * Displays dealer and player cards as images
+     *
+     */
 
- 	public void updateCardPanels(CardGroup dealerCards, CardGroup playerCards) { // Displays dealer and player cards as images
+ 	public void updateCardPanels(CardGroup dealerCards, CardGroup playerCards) 
+ 	{
 		if (dealerCardPanel != null) { // If they're already added, remove them
 			frame.getContentPane().remove(dealerCardPanel);
 			frame.getContentPane().remove(playerCardPanel);
@@ -246,17 +285,29 @@ public class GuiView extends JFrame {
 		}
 		if(playerCards!=null) {
 			playerCardPanel = new CardGroupPanel(playerCards, 420 - (playerCards.getCount() * 40), 300, 70, 104, 10);
+			playerCardPanel.showScoreLbl();
 			frame.getContentPane().add(playerCardPanel);
 		}
 		
 		frame.repaint();
 	}
+ 	
+ 	/**
+     * 
+     *
+     */
     
  	public void isYourTurn() { 
  		btnHit.setEnabled(true);
  		btnStand.setEnabled(true);
+ 		lblInfo.setText("Is your turn!"); 
 		frame.repaint();
 	}
+ 	
+ 	/**
+     * 
+     *
+     */
  	
  	public void playerBusted() { 
  		btnHit.setEnabled(false);
@@ -283,25 +334,33 @@ public class GuiView extends JFrame {
 	}
 
  	public void playerTie() {
+ 		dealerCardPanel.showScoreLbl();
  		lblInfo.setText("You Tie!"); 
 		outcomeHappened();
  		frame.repaint();
 	}
 
 	public void playerWin() {
+		dealerCardPanel.showScoreLbl();
 		lblInfo.setText("You Won!"); 
 		outcomeHappened();
 		frame.repaint();
 	}
 
 	public void playerLose() {
+		dealerCardPanel.showScoreLbl();
 		lblInfo.setText("You Lose!"); 
 		outcomeHappened();
 		frame.repaint();
 	}	
  	
-	public  void outcomeHappened() { //If something's happened, this round is over. Show the results of round and Continue button
-
+	public void outcomeHappened() { //If something's happened, this round is over. Show the results of round and Continue button
+		btnContinue.setEnabled(false);
+		btnContinue.setVisible(false);
+		btnContinue.setBounds(290, 444, 320, 35);
+		
+		frame.getContentPane().add(btnContinue);
+		
 		btnHit.setEnabled(false);
 		btnStand.setEnabled(false);
 
@@ -325,22 +384,12 @@ public class GuiView extends JFrame {
 		lblInfo.setForeground(Color.ORANGE);
 		
 		// Remove deal objects
-
-		frame.getContentPane().remove(lblDealer);
-		frame.getContentPane().remove(lblPlayer);
-		frame.getContentPane().remove(btnHit);
-		frame.getContentPane().remove(btnStand);
-		frame.getContentPane().remove(lblBetAmount);
-		frame.getContentPane().remove(lblBetAmountDesc);
-		frame.getContentPane().remove(btnContinue);
-		frame.getContentPane().remove(dealerCardPanel);
-		frame.getContentPane().remove(playerCardPanel);
-		lblInfo.setText("Please enter a bet and click Bet");
-		tfBetAmount.setEnabled(true);
-		btnBet.setEnabled(true);
-		btnBet.requestFocus();
-		frame.repaint();
-
+		
+		controller.sendClientMessageToServer("CONTINUE"); // When pressed, hit
+		frame.getContentPane().removeAll(); // Remove all objects from screen, restart the game
+	
+		
+		/*
 		if (balance <= 0) { // If out of funds, either top up or end game
 			int choice = JOptionPane.showOptionDialog(null, "You have run out of funds. Press Yes to add $100, or No to end the current game.", "Out of funds", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
@@ -353,7 +402,7 @@ public class GuiView extends JFrame {
 				initGuiObjects();
 				return;
 			}
-		}
+		}*/
 
 	}
 

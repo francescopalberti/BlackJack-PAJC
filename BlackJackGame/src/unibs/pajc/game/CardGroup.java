@@ -6,26 +6,13 @@ import java.util.Random;
 
 public class CardGroup {
 	public ArrayList<Card> cards;
-	private boolean bust=false;
-	private int blackJackValue=0;
+	private boolean bust;
+	private int blackJackValue;
 
 	public CardGroup() {
 		cards = new ArrayList<Card>();
-	}
-	public Card takeCard() { // Removes card from top of card group's ArrayList
-								// and returns it
-		if (this.cards.size() < 1) {
-			System.out.println("Error: no more cards!");
-			System.exit(0);
-		}
-		Card tempCard = this.cards.get(this.cards.size() - 1);
-		this.cards.remove(this.cards.size() - 1);
-		return tempCard;
-	}
-
-	public void shuffle() {
-		long seed = System.nanoTime(); // Seed for random class
-		Collections.shuffle(this.cards, new Random(seed)); // This implementation traverses the list backwards, from the last element up to the second, repeatedly swapping a randomly selected element into the "current position"
+		bust = false;
+		blackJackValue = 0;
 	}
 
 	public int getTotalValue() {
@@ -63,7 +50,7 @@ public class CardGroup {
 	 */
 
 	public boolean isSoft() {
-		return hasAce() && getTotalValue() < 12;
+		return (hasAce() && (getTotalValue() < 12));
 	}
 	
 	/**
@@ -84,14 +71,16 @@ public class CardGroup {
 	/**
 	 * Calculate the real value of the hand. 
 	 * Considering if it is an hard or soft hand
+	 * @return 
 	 *
 	 */
 	
-	public void blackJackValue() {
+	public int blackJackValue() {
 		blackJackValue = getTotalValue();
 		if (isSoft()) {
 			blackJackValue += 10;
 		}
+		return blackJackValue;
 	}
 	
 	/**
@@ -101,7 +90,7 @@ public class CardGroup {
 	 */
 
 	public boolean CheckBust(){
-		if(blackJackValue > 21){
+		if(blackJackValue() > 21){
 			bust = true;
 		}
 		else

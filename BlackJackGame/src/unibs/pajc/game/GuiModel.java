@@ -14,56 +14,34 @@ import unibs.pajc.game.Card.Suit;
  */
 
 public class GuiModel {
-	private int numPlayers;
-    private ArrayList<String> playerNames;
     private CardGroup dealerCards;
     private CardGroup playerCards;
     private int betAmount;
-    private int stage;
-    private boolean load, multiplayer=false;
+    private boolean multiplayer=false;
 
 	// initialize chatServer and set up GUI
     public GuiModel(){
-		stage=1;
 		playerCards=new CardGroup();
 		dealerCards=new CardGroup();
 	}
-	public void setNumPlayers(int numPlayers){
-        this.numPlayers = numPlayers;
-    }
-    public int getNumPlayers(){
-        return this.numPlayers;
-    }
-    public void setPlayerNames(ArrayList<String> playerNames){
-        this.playerNames = playerNames;
-    }
-    public ArrayList<String> getPlayerNames(){
-        return this.playerNames;
-    }
+	
+    
     public void setBetAmount(int betAmount){
         this.betAmount = betAmount;
     }
+    
     public int getBetAmount(){
         return this.betAmount;
     }
-    public void incrementStage(){
-        this.stage++;
-    }
-    public int getStage(){
-        return this.stage;
-    }
-    public void setLoad(boolean load){
-        this.load = load;
-    }
-    public boolean getLoad(){
-        return this.load;
-    }
+   
 	public void setMultiplayer() {
 		multiplayer=true;
 	}
+
 	public boolean isMultiplayerUser() {
 		return multiplayer;
 	}
+	
 	public void addCardToDealer(String rank, String suit) {
 		Rank aRank = Rank.valueOf(rank.toUpperCase());
 		Suit aSuit = Suit.valueOf(suit.toUpperCase());
@@ -79,8 +57,21 @@ public class GuiModel {
 	public CardGroup getDealerCards() {
 		return dealerCards;
 	}
+	
+	public void uncoverDealerCard() {
+		dealerCards.get(0).unCoverCard();
+	}
+
 	public CardGroup getPlayerCards() {
 		return playerCards;
+	}
+
+	public void firstDealerCard(String rank, String suit) {
+		Rank aRank = Rank.valueOf(rank.toUpperCase());
+		Suit aSuit = Suit.valueOf(suit.toUpperCase());
+		Card dealerCard = new Card(aRank, aSuit);
+		dealerCard.coverCard();
+		dealerCards.add(dealerCard);
 	}
 
 }

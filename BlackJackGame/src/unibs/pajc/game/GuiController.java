@@ -133,7 +133,7 @@ public class GuiController {
         }
     }
 
-	/**
+    /**
    * Changes the client view based on which message was received from the server.
    *
    * @param serverMessage Message received from server
@@ -155,7 +155,11 @@ public class GuiController {
             	gui.updateCardPanels(gm.getDealerCards(), gm.getPlayerCards()); 
             	break;
             case "NEWDEALERCARD":
-            	gm.addCardToDealer(serverMessageComponents[1], serverMessageComponents[2]); // Add card from top of deck to dealer's cards
+            	if(messageToDisplay.contains("1DCARD")) {
+            		gm.firstDealerCard(serverMessageComponents[1], serverMessageComponents[2]);
+            	} else {
+            		gm.addCardToDealer(serverMessageComponents[1], serverMessageComponents[2]); // Add card from top of deck to dealer's cards
+            	}
             	gui.updateCardPanels(gm.getDealerCards(), gm.getPlayerCards());                
                 break;
             case "TURN":
@@ -174,15 +178,22 @@ public class GuiController {
             	switch (serverMessageComponents[1]) {
                 case "TIE":
                 	gui.playerTie();
+                	gm = new GuiModel();
                     break;
                 case "WIN":
                 	gui.playerWin();
+                	gm = new GuiModel();
                     break;
                 case "LOSE":
                 	gui.playerLose();
+                	gm = new GuiModel();
                     break;
             	}
-            break;
+            	break;
+            case "DEALERTURN":
+            	gm.uncoverDealerCard();
+            	gui.updateCardPanels(gm.getDealerCards(), gm.getPlayerCards());                
+                break;
 	}
   
 }

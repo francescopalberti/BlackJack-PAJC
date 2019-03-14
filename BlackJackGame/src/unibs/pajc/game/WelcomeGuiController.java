@@ -19,8 +19,6 @@ public class WelcomeGuiController {
 	  }
 
 	  public void attachActionListeners(){
-	      welcomeGui.onePlayerButton.addActionListener(e -> gm.setNumPlayers(1));
-	      welcomeGui.onePlayerButton.addActionListener(new closeAndIncrementStage());
 	      welcomeGui.multiPlayerButton.addActionListener(e -> gm.setMultiplayer()); 
 	      welcomeGui.multiPlayerButton.addActionListener(new closeAndIncrementStage());
 	  }
@@ -28,7 +26,6 @@ public class WelcomeGuiController {
 	  public class closeAndIncrementStage implements ActionListener{
 	      public void actionPerformed(ActionEvent event){
 	          welcomeGui.welcomeFrame.setVisible(false);
-	          gm.incrementStage();
 	      }
 	  }
 }

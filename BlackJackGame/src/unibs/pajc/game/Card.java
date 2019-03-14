@@ -9,6 +9,7 @@ package unibs.pajc.game;
 public class Card {
 	private final Rank RANK;    // rank of the card
     private final Suit SUIT;    // suit of the card
+	private boolean covered=false;
     
     /**
      * Constructor for Card object.
@@ -107,6 +108,24 @@ public class Card {
     public String getFileName() { // Get the file name of the image of this card
 		return String.format("C:\\Users\\franc\\git\\BlackJack-PAJC\\cardImages\\%s\\%s.png", this.SUIT, this.RANK); // Return file name
     }
+
+	public void coverCard() {
+		setCovered(true);
+		
+	}
+
+	public boolean isCovered() {
+		return covered;
+	}
+
+	public void setCovered(boolean covered) {
+		this.covered = covered;
+	}
+
+	public void unCoverCard() {
+		setCovered(false);
+		
+	}
     
     
 }

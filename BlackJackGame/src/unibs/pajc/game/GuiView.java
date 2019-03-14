@@ -1,22 +1,19 @@
 package unibs.pajc.game;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -29,24 +26,20 @@ import javax.swing.SwingUtilities;
 
 public class GuiView extends JFrame {
 	private GuiController controller; // client GUI controller
-	private JButton Hit;
-	private JButton Stay;
 	private JPanel buttons;
 	private JTextArea displayArea; 
 	private JFrame frame = new MainFrame(); // Creating an instance of the MainFrame class.
 
 	private CardGroupPanel dealerCardPanel = null, playerCardPanel = null; // The deck of cards, the dealer's cards, the player's cards, the panels for the player's and dealer's cards
-	private Card dealerHiddenCard; //  and the hidden card of the dealer.
-
-	private double balance = 100.0; // Setting the initial amounts for the Balance,
-	private int betAmount = 0, roundCount = 0; // the amount the player bets and the number of rounds.
+	
+	private int balance = 10; // Setting the initial amounts for the Balance,
+	private int betAmount = 0;  // the amount the player bets.
 
 	// Creating the GUI elements in the window builder
-	private JTextField tfBalance;
+	private JLabel lblInitBalanceValue;
 	private JLabel lblInitialBalance;
 
 	private JButton btnEndGame;
-	private JTextField tfBetAmount;
 	private JLabel lblEnterBet;
 	private JButton btnBet;
 	private JLabel lblCurrentBalance;
@@ -55,11 +48,10 @@ public class GuiView extends JFrame {
 	private JLabel lblPlayer;
 	private JButton btnHit;
 	private JButton btnStand;
-	private JLabel lblBetAmount;
-	private JLabel lblBetAmountDesc;
 	private JLabel lblInfo;
 	private JButton btnContinue;
-	private JLabel lblShuffleInfo = null;
+	private JComboBox<String> chipBox;
+	String[] chip = { "5", "10", "20", "50", "100" };
 	
 	/**
      * Constructor for GUI object. Set up GUI
@@ -75,20 +67,27 @@ public class GuiView extends JFrame {
     
     // This function runs when the program starts or when the game ends. It displays the initial GUI objects to enter an initial balance and start/stop a game
  	public void initGuiObjects() {
- 		tfBalance = new JTextField(); // Text field to store initial balance
+ 		
+
+ 		//Create the combo box, select item at index 4.
+ 		//Indices start at 0, so 4 specifies the pig.
+ 		chipBox = new JComboBox<String>(chip);
+ 		lblInitBalanceValue = new JLabel("100 $"); // Text field to store initial balance
  		lblInitialBalance = new JLabel("Initial Balance:"); // Initial balance label
  		lblCurrentBalance = new JLabel("Current Balance:"); // Current balance label
  		lblBalanceAmount = new JLabel(); // Balance label, shows current balance
- 		tfBetAmount = new JTextField(); // Bet amount text field
  		lblEnterBet = new JLabel("Enter Bet:"); // Bet amount info label
  		btnBet = new JButton("Bet"); // Deal button
+ 		lblDealer = new JLabel("Dealer"); // Dealer label
+ 		lblPlayer = new JLabel("Player"); // Player label
+ 		
  		btnBet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				getBet();
 			}
 		});
- 		lblDealer = new JLabel("Dealer"); // Dealer label
- 		lblPlayer = new JLabel("Player"); // Player label
+ 		btnBet.setBounds(679, 610, 200, 50);
+ 		
  		btnHit = new JButton("Hit"); // Hit button
  		btnHit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -129,6 +128,9 @@ public class GuiView extends JFrame {
 		lblInfo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblInfo.setBounds(290, 482, 320, 28);
 		frame.getContentPane().add(lblInfo);
+		
+		chipBox.setBounds(790, 580, 89, 28);
+		
  	}
  	
  	/**
@@ -147,19 +149,15 @@ public class GuiView extends JFrame {
      */
  	
  	public void showBetGui() { 
- 		btnEndGame.setEnabled(true);
- 		btnEndGame.setVisible(true);
- 		
- 		tfBalance.setText("100");
- 		tfBalance.setBounds(131, 580, 89, 28);
- 		tfBalance.setColumns(10);
- 		frame.getContentPane().add(tfBalance);
+ 				
+ 		lblInitBalanceValue.setBounds(131, 580, 89, 28);
+ 		frame.getContentPane().add(lblInitBalanceValue);
  		
  		
  		lblInitialBalance.setFont(new Font("Arial", Font.BOLD, 13));
  		lblInitialBalance.setForeground(Color.WHITE);
  		lblInitialBalance.setBounds(30, 586, 100, 16);
- 		tfBalance.setEnabled(false);
+ 		lblInitBalanceValue.setEnabled(false);
  		frame.getContentPane().add(lblInitialBalance);
  		
 		
@@ -169,7 +167,7 @@ public class GuiView extends JFrame {
 		lblCurrentBalance.setBounds(315, 578, 272, 22);
 		frame.getContentPane().add(lblCurrentBalance);
 
-		lblBalanceAmount.setText(String.format("$%.2f", balance));
+		lblBalanceAmount.setText(String.format("$%d", balance));
 		lblBalanceAmount.setForeground(Color.ORANGE);
 		lblBalanceAmount.setFont(new Font("Arial", Font.BOLD, 40));
 		lblBalanceAmount.setHorizontalAlignment(SwingConstants.CENTER);
@@ -178,22 +176,16 @@ public class GuiView extends JFrame {
 
 		lblInfo.setText("Please enter a bet and click Deal");
 		frame.getContentPane().add(lblInfo);
-
 		
-		tfBetAmount.setText("10");
-		tfBetAmount.setBounds(790, 580, 89, 28);
-		frame.getContentPane().add(tfBetAmount);
-
 		
 		lblEnterBet.setFont(new Font("Arial", Font.BOLD, 14));
 		lblEnterBet.setForeground(Color.WHITE);
 		lblEnterBet.setBounds(689, 586, 100, 16);
 		frame.getContentPane().add(lblEnterBet);
 
-		
-		btnBet.setBounds(679, 610, 200, 50);
 		btnBet.setEnabled(true);
- 		
+		chipBox.setEnabled(true);
+		frame.getContentPane().add(chipBox);
 		frame.getContentPane().add(btnBet);
 		
 		frame.repaint();
@@ -205,28 +197,28 @@ public class GuiView extends JFrame {
      */
  	
  	public void getBet() {
- 		if (isValidAmount(tfBetAmount.getText()) == true) { 
-			betAmount = Integer.parseInt(tfBetAmount.getText());
+ 		
+ 		if (isValidAmount((String) chipBox.getSelectedItem()) == true) { 
+			betAmount = Integer.parseInt((String) chipBox.getSelectedItem());
 		} else {
 			lblInfo.setText("Error: Bet must be a natural number!"); // Give an error
-			tfBetAmount.requestFocus();
+			chipBox.requestFocus();
 			return;
 		}
 
 		if (betAmount > balance) { // If bet is higher than balance
 			lblInfo.setText("Error: Bet higher than balance!"); // Give an error
-			tfBetAmount.requestFocus();
+			chipBox.requestFocus();
 			return;
 		}
 		
-		controller.sendClientMessageToServer( "BET" ); 
+		controller.sendClientMessageToServer( "BET--"+ betAmount ); 
 		
 		balance -= betAmount; // Subtract bet from balance
-		lblBalanceAmount.setText(String.format("$%.2f", balance));
-		
-		tfBetAmount.setEnabled(false);
+		lblBalanceAmount.setText(String.format("$%d", balance));
+	
 		btnBet.setEnabled(false);
-
+		chipBox.setEnabled(false);
 		lblInfo.setText("Waiting others player bet"); 
 		frame.repaint(); 
 
@@ -325,7 +317,7 @@ public class GuiView extends JFrame {
 		frame.repaint();
 	}
  	
- 	public void playerEndTur() {
+ 	public void playerEndTurn() {
  		btnHit.setEnabled(false);
  		btnStand.setEnabled(false);
  		lblInfo.setBackground(Color.CYAN);
@@ -346,6 +338,8 @@ public class GuiView extends JFrame {
 		outcomeHappened();
 		frame.repaint();
 	}
+	
+	
 
 	public void playerLose() {
 		dealerCardPanel.showScoreLbl();
@@ -353,7 +347,18 @@ public class GuiView extends JFrame {
 		outcomeHappened();
 		frame.repaint();
 	}	
+	
+	public void playerBlackJack() {
+		dealerCardPanel.showScoreLbl();
+		lblInfo.setText("You Have a BlackJack!!"); 
+		outcomeHappened();
+		frame.repaint();
+	}
  	
+	public void updateBalance(int _balance) {
+		this.balance=_balance;
+		lblBalanceAmount.setText(String.format("$%d", balance));
+	}
 	public void outcomeHappened() { //If something's happened, this round is over. Show the results of round and Continue button
 		btnContinue.setEnabled(false);
 		btnContinue.setVisible(false);
@@ -370,6 +375,8 @@ public class GuiView extends JFrame {
 		new Timer().schedule(new TimerTask() {
 			@Override
 			public void run() {
+				btnEndGame.setEnabled(true);
+		 		btnEndGame.setVisible(true);
 				btnContinue.setEnabled(true);
 				btnContinue.setVisible(true);
 				btnContinue.requestFocus();
@@ -387,9 +394,10 @@ public class GuiView extends JFrame {
 		
 		controller.sendClientMessageToServer("CONTINUE"); // When pressed, hit
 		frame.getContentPane().removeAll(); // Remove all objects from screen, restart the game
+
+	}
 	
-		
-		/*
+	public void gameIsFinished(int balance) {
 		if (balance <= 0) { // If out of funds, either top up or end game
 			int choice = JOptionPane.showOptionDialog(null, "You have run out of funds. Press Yes to add $100, or No to end the current game.", "Out of funds", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
@@ -399,11 +407,9 @@ public class GuiView extends JFrame {
 			} else {
 				frame.getContentPane().removeAll();
 				frame.repaint();
-				initGuiObjects();
 				return;
 			}
-		}*/
-
+		}
 	}
 
 	
@@ -447,6 +453,10 @@ public class GuiView extends JFrame {
 			return false;
 		}
 	}
+
+	
+
+	
 
 	
 

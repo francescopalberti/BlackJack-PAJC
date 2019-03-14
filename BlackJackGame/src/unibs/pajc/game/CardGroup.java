@@ -105,4 +105,8 @@ public class CardGroup {
 			card.toString();
 		}
 	}
+	
+	public boolean hasABlackJack() {
+		return (blackJackValue() == 21) && (cards.size() == 2);
+	}
 }

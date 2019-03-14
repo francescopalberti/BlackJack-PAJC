@@ -172,7 +172,7 @@ public class GuiController {
             	gui.playerStand();                
                 break;
             case "ENDTURN":
-            	gui.playerEndTur();                
+            	gui.playerEndTurn();                
                 break;
             case "RESULT":
             	switch (serverMessageComponents[1]) {
@@ -188,11 +188,23 @@ public class GuiController {
                 	gui.playerLose();
                 	gm = new GuiModel();
                     break;
+                case "BLACKJACK":
+                	gui.playerBlackJack();
+                	gm = new GuiModel();
+                    break;
             	}
             	break;
             case "DEALERTURN":
             	gm.uncoverDealerCard();
             	gui.updateCardPanels(gm.getDealerCards(), gm.getPlayerCards());                
+                break;
+            case "NEWBALANCE":
+            	int balance = Integer.parseInt(serverMessageComponents[1]);
+            	if (balance!=0) {
+					gui.updateBalance(balance);
+				} else {
+					gui.gameIsFinished(balance);
+				}
                 break;
 	}
   

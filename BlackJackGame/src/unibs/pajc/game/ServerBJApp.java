@@ -73,7 +73,7 @@ public class ServerBJApp{
 		placedBetsLatch = new CountDownLatch(numberOfPlayers); //serve per aspettare che tutti scommettano
 		playerContinueLatch = new CountDownLatch(numberOfPlayers);
 		for (int i = 1; i <= numberOfPlayers; i++) {
-			sockServer[i].sendDataToClient("GETBET--");
+			sockServer[i].sendDataToClient("GETBET");
 			System.out.println("SERVER-> Bet P" +i+" Sent"); //diagnostic use
 		}
 		
@@ -108,7 +108,7 @@ public class ServerBJApp{
 	private void allBetPlaced(){
 		try{
 			for (int i=1;i<= numberOfPlayers;i++) {
-				sockServer[i].sendDataToClient("ALLBETPLACED--");
+				sockServer[i].sendDataToClient("ALLBETPLACED");
 				System.out.println("SERVER-> ALLBETPLACED P" +i+" Sent"); //diagnostic use
 			}
 		}
@@ -146,7 +146,7 @@ public class ServerBJApp{
 	
 	private void menageTurn() {
 		for (int i = 1; i <= numberOfPlayers; i++)  {
-				sockServer[i].sendDataToClient("TURN--");
+				sockServer[i].sendDataToClient("TURN");
 				System.out.println("SERVER P"+i+" TURN");
 				try {
 					Thread.sleep(10000);
@@ -155,8 +155,8 @@ public class ServerBJApp{
 					e.printStackTrace();
 				}
 				if (!sockServer[i].getEndTurn()) {
-					sockServer[i].sendDataToClient("ENDTURN--");
-					System.out.println("SERVER P"+i+"ENDTURN");
+					sockServer[i].sendDataToClient("ENDTURN");
+					System.out.println("SERVER-> P"+i+"ENDTURN");
 				}
 				
 		}
@@ -164,15 +164,15 @@ public class ServerBJApp{
 	
 	private void dealerTurn() {	
 		for (int j = 1; j <= numberOfPlayers; j++) {
-			sockServer[j].sendDataToClient("DEALERTURN--");
+			sockServer[j].sendDataToClient("DEALERTURN");
 		}
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		if (dealer.GetCardTotal() < 16){
-			while(dealer.GetCardTotal() < 16){
+		if (dealer.getCardTotal() < 16){
+			while(dealer.getCardTotal() < 16){
 				Card card1 = gameDeck.dealCard();
 				dealer.CardHit(card1);
 				for (int j = 1; j <= numberOfPlayers; j++) {
@@ -185,40 +185,67 @@ public class ServerBJApp{
 	private void getResults() {
 		try{
 			for (int i=1;i <= numberOfPlayers;i++) {
-				if( (dealer.GetCardTotal() <= 21) && (players.get(i-1).GetCardTotal() <= 21 ) ){
-
-					if (dealer.GetCardTotal() > players.get(i-1).GetCardTotal()) {
-						sockServer[i].sendDataToClient("RESULT--LOSE");
-					}
-
-					if (dealer.GetCardTotal() < players.get(i-1).GetCardTotal()) {
-						sockServer[i].sendDataToClient("RESULT--WIN");
-					}
-
-					if (dealer.GetCardTotal() == players.get(i-1).GetCardTotal()) {
-						sockServer[i].sendDataToClient("RESULT--TIE");
-					}				
-
-				}//end if statement when dealer and player are under 21
-
-				if(dealer.CheckBust()){
+				if (players.get(i-1).hasABJ()) {
+					players.get(i-1).refreshBalance("BJ");
+					sockServer[i].sendDataToClient("NEWBALANCE--"+ players.get(i-1).getBalance());
+					sockServer[i].sendDataToClient("RESULT--BLACKJACK");
 					
-					if(players.get(i-1).CheckBust()){
-						sockServer[i].sendDataToClient("RESULT--TIE");
-					}
-					if(players.get(i-1).GetCardTotal() <= 21){
-						sockServer[i].sendDataToClient("RESULT--WIN");
-					}
-				}//end if statement when dealer busted
+				
+				} else {
+					if( (dealer.getCardTotal() <= 21) && (players.get(i-1).getCardTotal() <= 21 ) ){
 
-				if(players.get(i-1).CheckBust() && dealer.GetCardTotal() <= 21){
-					sockServer[i].sendDataToClient("RESULT--LOSE");
-				}//end if statement when player busted
-			}
+						if (dealer.getCardTotal() > players.get(i-1).getCardTotal()) {
+							playerLose(i);
+							}
+
+						if (dealer.getCardTotal() < players.get(i-1).getCardTotal()) {
+							playerWon(i);
+						}
+
+						if (dealer.getCardTotal() == players.get(i-1).getCardTotal()) {
+							playerTie(i);
+						}				
+
+					}//end if statement when dealer and player are under 21
+
+					if(dealer.CheckBust()){
+						
+						if(players.get(i-1).CheckBust()){
+							playerTie(i);
+						}
+						if(players.get(i-1).getCardTotal() <= 21){
+							playerWon(i);
+						}
+						
+					}//end if statement when dealer busted
+
+					if(players.get(i-1).CheckBust() && dealer.getCardTotal() <= 21){
+						playerLose(i);
+					}//end if statement when player busted
+				}
+			}	
+				
 		}
 		catch(NullPointerException e){
 			e.printStackTrace();
 		}
+	}
+	
+	private void playerLose(int i) {
+		players.get(i-1).refreshBalance("LOSE");
+		sockServer[i].sendDataToClient("NEWBALANCE--"+ players.get(i-1).getBalance());
+		sockServer[i].sendDataToClient("RESULT--LOSE");
+	}
+	
+	private void playerWon(int i) {
+		players.get(i-1).refreshBalance("WIN");
+		sockServer[i].sendDataToClient("NEWBALANCE--"+ players.get(i-1).getBalance());
+		sockServer[i].sendDataToClient("RESULT--WIN");
+	}
+	
+	private void playerTie(int i) {
+		sockServer[i].sendDataToClient("NEWBALANCE--"+ players.get(i-1).getBalance());
+		sockServer[i].sendDataToClient("RESULT--TIE");
 	}
 	
 	 /*
@@ -291,8 +318,9 @@ public class ServerBJApp{
 			{ 
 				client_msg=input.readLine(); // read new message
 				System.out.println( "CLIENT -> "+ client_msg);
-				if(client_msg.contains("BET")){				
-					placeBet();
+				if(client_msg.contains("BET")){	
+					String[] clientMessageComponents = client_msg.split("--");
+					placeBet(Integer.parseInt(clientMessageComponents[1]));
 				}
 				if(client_msg.contains("HIT")){				
 					cardHit();
@@ -307,10 +335,12 @@ public class ServerBJApp{
 		} // end method processConnection
 
 		private void playerContinue() {
+			endTurn=false;
 			playerContinueLatch.countDown();
 		}
 
-		private void placeBet() {
+		private void placeBet(int betValue) {
+			players.get(this.myConID -1).setBet(betValue);
 			placedBetsLatch.countDown();
 		}
 

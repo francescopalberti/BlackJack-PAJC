@@ -64,7 +64,7 @@ public class CardGroupPanel extends JPanel{
 
 	private void initScoreLbl() {
 		total = cardGroup.blackJackValue();
-		playerScoreLbl = new JLabel((total == 21 ? "BJ" : total) + "");
+		playerScoreLbl = new JLabel((cardGroup.hasABlackJack() ? "BJ" : total) + "");
 		playerScoreLbl.setForeground(Color.WHITE);
 		playerScoreLbl.setFont(new Font("Lucida Grande", Font.BOLD, 20));
 		playerScoreLbl.setVerticalAlignment(SwingConstants.CENTER);

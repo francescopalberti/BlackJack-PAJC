@@ -203,7 +203,7 @@ public class GuiController {
             	if (balance!=0) {
 					gui.updateBalance(balance);
 				} else {
-					gui.gameIsFinished(balance);
+					gui.gameIsFinished();
 				}
                 break;
 	}

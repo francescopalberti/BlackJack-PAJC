@@ -72,47 +72,54 @@ public class ServerBJApp{
 		gameDeck = new Deck();
 		placedBetsLatch = new CountDownLatch(numberOfPlayers); //serve per aspettare che tutti scommettano
 		playerContinueLatch = new CountDownLatch(numberOfPlayers);
-		for (int i = 1; i <= numberOfPlayers; i++) {
-			sockServer[i].sendDataToClient("GETBET");
-			System.out.println("SERVER-> Bet P" +i+" Sent"); //diagnostic use
-		}
 		
+		sendBetMsg();
+		
+		/*attendo che tutti piazzino la scommessa*/
 		try {
-            placedBetsLatch.await(); //attendo che tutti piazzino la scommessa
+            placedBetsLatch.await(); 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 		
 		allBetPlaced();
 		
+		/*Piccola pausa di 0.5s*/
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		dealCards();
         menageTurn();
         dealerTurn();
 		getResults();
+		
+		/*Attendo che tutti proseguano il gioco*/
 		try {
-            playerContinueLatch.await(); //attendo che tutti piazzino la scommessa
+            playerContinueLatch.await(); 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 		
 		playBlackjack();
-		
+	}
+
+	private void sendBetMsg() {
+		for (int i = 1; i <= numberOfPlayers; i++) {
+			sockServer[i].sendDataToClient("GETBET");
+			System.out.println("SERVER-> Bet P" +i+" Sent"); //diagnostic use
+		}
 	}
 
 	private void allBetPlaced(){
-		try{
 			for (int i=1;i<= numberOfPlayers;i++) {
 				sockServer[i].sendDataToClient("ALLBETPLACED");
 				System.out.println("SERVER-> ALLBETPLACED P" +i+" Sent"); //diagnostic use
 			}
-		}
-		catch(NullPointerException n){}
+		
 	}
 
 	private void dealCards(){

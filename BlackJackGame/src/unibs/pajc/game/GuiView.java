@@ -397,19 +397,19 @@ public class GuiView extends JFrame {
 
 	}
 	
-	public void gameIsFinished(int balance) {
-		if (balance <= 0) { // If out of funds, either top up or end game
+	public void gameIsFinished() {
+		
 			int choice = JOptionPane.showOptionDialog(null, "You have run out of funds. Press Yes to add $100, or No to end the current game.", "Out of funds", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 			if (choice == JOptionPane.YES_OPTION) {
 				balance += 100;
-				lblBalanceAmount.setText(String.format("$%.2f", balance));
+				lblBalanceAmount.setText(String.format("$%d", balance));
 			} else {
 				frame.getContentPane().removeAll();
 				frame.repaint();
 				return;
 			}
-		}
+		
 	}
 
 	

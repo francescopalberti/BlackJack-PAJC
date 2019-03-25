@@ -18,15 +18,10 @@ public class MainClient {
      *
      * @param args String array of arguments passed to the client
      */
-	public static void main( String[] args )
+	public MainClient()
 	   {
-        GuiController appController;
-        // if no command line args
-        if ( args.length == 0 )
-        	appController = new GuiController(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT); // connect to localhost
-        else
-        	appController = new GuiController( args[ 0 ], DEFAULT_SERVER_PORT ); // use args to connect
-        	try {
+        GuiController appController = new GuiController(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT); // connect to localhost
+        try {
 				appController.runClient();
 			} catch (IOException e) {
 				e.printStackTrace();

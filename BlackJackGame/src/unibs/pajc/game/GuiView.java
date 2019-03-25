@@ -28,7 +28,7 @@ public class GuiView extends JFrame {
 	private GuiController controller; // client GUI controller
 	private JPanel buttons;
 	private JTextArea displayArea; 
-	private JFrame frame = new MainFrame(); // Creating an instance of the MainFrame class.
+	private JFrame frame = new GameFrame(); // Creating an instance of the MainFrame class.
 
 	private CardGroupPanel dealerCardPanel = null, playerCardPanel = null; // The deck of cards, the dealer's cards, the player's cards, the panels for the player's and dealer's cards
 	

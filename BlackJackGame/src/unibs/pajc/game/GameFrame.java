@@ -5,8 +5,8 @@ import java.awt.event.*;
 import javax.swing.JFrame;
 import javax.swing.*;
 
-public class MainFrame extends JFrame{
-		MainFrame() {
+public class GameFrame extends JFrame{
+		GameFrame() {
 			setTitle("Blackjack");
 			setSize(900, 700);
 			setLocationRelativeTo(null);

@@ -8,7 +8,7 @@ import javax.swing.*;
 public class GameFrame extends JFrame{
 		GameFrame() {
 			setTitle("Blackjack");
-			setSize(900, 700);
+			setSize(1280, 720);
 			setLocationRelativeTo(null);
 			setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
 			setLayout(null);
@@ -21,7 +21,7 @@ public class GameFrame extends JFrame{
 			}
 			}
 			}); 
-	               ImagePanel bgImagePanel = new ImagePanel("C:\\Users\\franc\\git\\BlackJack-PAJC\\BlackJackGame\\resources\\background.png");
+	               ImagePanel bgImagePanel = new ImagePanel("resources\\game_bkg.png");
 			bgImagePanel.setBounds(0, 0, this.getWidth(), this.getHeight());
 			setContentPane(bgImagePanel);
 		}

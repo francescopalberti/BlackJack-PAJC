@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
  *
  * @author Francesco Palberti, Enrico Zaninelli
  */
-public class ServerBJApp{
+public class ServerLogic{
 	private static final int numberOfPlayers = 2;
 	private CountDownLatch placedBetsLatch;                                 // latch to wait for all players to place their bets
 	private CountDownLatch playerContinueLatch;                                 // latch to wait for all players to place their bets
@@ -31,7 +31,7 @@ public class ServerBJApp{
 	private Player dealer;
 
 	// set up GUI
-	public ServerBJApp() {
+	public ServerLogic() {
 		
 		players = new ArrayList<Player>();
 		sockServer = new SockServer[ 100 ]; // allocate array for up to 10 server threads

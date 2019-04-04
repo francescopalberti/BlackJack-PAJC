@@ -166,13 +166,13 @@ public class GuiView extends JFrame {
 		lblInfo.setForeground(Color.ORANGE);
 		lblInfo.setFont(new Font("Arial", Font.BOLD, 16));
 		lblInfo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblInfo.setBounds(50, 620, 320, 28);
+		lblInfo.setBounds(50, 630, 320, 28);
 		frame.getContentPane().add(lblInfo);
 		
 		lblPlyBalanceAmount.setForeground(Color.ORANGE);
 		lblPlyBalanceAmount.setFont(new Font("Arial", Font.BOLD, 40));
 		lblPlyBalanceAmount.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPlyBalanceAmount.setBounds(400, 632, 272, 50);
+		lblPlyBalanceAmount.setBounds(500, 632, 272, 50);
 		frame.getContentPane().add(lblPlyBalanceAmount);
 		
 		lblBetAmount.setFont(new Font("Arial", Font.BOLD, 40));
@@ -183,7 +183,7 @@ public class GuiView extends JFrame {
 		lblPlayerCrntBalnc.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPlayerCrntBalnc.setFont(new Font("Arial", Font.BOLD, 16));
 		lblPlayerCrntBalnc.setForeground(Color.WHITE);
-		lblPlayerCrntBalnc.setBounds(400, 615, 272, 22);
+		lblPlayerCrntBalnc.setBounds(500, 615, 272, 22);
 		frame.getContentPane().add(lblPlayerCrntBalnc);
 		
 		
@@ -356,7 +356,7 @@ public class GuiView extends JFrame {
 			frame.getContentPane().add(dealerCardPanel);
 		}
 		if(playerCards!=null) {
-			playerCardPanel = new CardGroupPanel(playerCards, 420 - (playerCards.getCount() * 40), 300, 70, 104, 10);
+			playerCardPanel = new CardGroupPanel(playerCards, 600 - (playerCards.getCount() * 40), 450, 70, 104, 10);
 			playerCardPanel.showScoreLbl();
 			frame.getContentPane().add(playerCardPanel);
 		}

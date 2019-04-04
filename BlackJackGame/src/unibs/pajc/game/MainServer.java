@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 public class MainServer {
 	public static void main( String[] args )
 	   {
-	      ServerBJApp application = new ServerBJApp(); 
+	      ServerLogic application = new ServerLogic(); 
 	      application.startGameConnection(); // run server application
 	   } // end main
 }

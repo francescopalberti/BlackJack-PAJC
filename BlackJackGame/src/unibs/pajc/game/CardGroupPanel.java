@@ -19,7 +19,7 @@ import javax.swing.SwingConstants;
 public class CardGroupPanel extends JPanel{
 	
 	private int numCards;
-	private static final String coveredCard_URL = "C:\\Users\\franc\\git\\BlackJack-PAJC\\cardImages\\backCover.png";
+	private static final String coveredCard_URL = "resources\\cardImages\\backCover.png";
 	private int total;
 	private int height, left, top, width, gap;
 	CardGroup cardGroup;

@@ -106,7 +106,7 @@ public class Card {
     }
     
     public String getFileName() { // Get the file name of the image of this card
-		return String.format("C:\\Users\\franc\\git\\BlackJack-PAJC\\cardImages\\%s\\%s.png", this.SUIT, this.RANK); // Return file name
+		return String.format("resources\\cardImages\\%s\\%s.png", this.SUIT, this.RANK); // Return file name
     }
 
 	public void coverCard() {

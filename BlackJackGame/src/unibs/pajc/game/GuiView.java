@@ -285,10 +285,6 @@ public class GuiView extends JFrame {
 		frame.repaint();
  	}
  	
- 	/**
-     * Gets the bet from the player
-     *
-     */
  	
  	/**
      * Gets the bet from the player

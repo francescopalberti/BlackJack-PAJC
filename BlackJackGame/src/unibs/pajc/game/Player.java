@@ -11,7 +11,15 @@ public class Player {
 	private CardGroup handCards;
 	private int balance=100;
 	private int bet=0;
-	
+	/**
+     * Constructor for Player object.
+     *
+     * @param null
+     */
+
+	public Player() {
+		handCards = new CardGroup();
+	}//end Constructor
 	/**
 	 * @return the balance
 	 */
@@ -50,15 +58,7 @@ public class Player {
 		this.bet = bet;
 	}
 
-	/**
-     * Constructor for Player object.
-     *
-     * @param null
-     */
-
-	public Player() {
-		handCards = new CardGroup();
-	}//end Constructor
+	
 
 	public Player(Card card1, Card card2) {
 		handCards = new CardGroup();
